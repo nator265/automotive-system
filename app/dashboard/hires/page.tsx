@@ -148,19 +148,19 @@ const HiresPage = () => {
   return (
     <main className="w-full mt-5 p-4 md:p-6">
       {/* Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-        <div className="bg-blue-50 p-4 rounded-lg shadow">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div className="bg-blue-50 p-4 rounded-lg shadow text-center sm:text-left">
           <h3 className="text-lg font-semibold text-blue-800">Hires</h3>
-          <p className="text-3xl font-bold text-blue-600">
+          <p className="text-2xl sm:text-3xl font-bold text-blue-600">
             {hiresMetrics.hires}
           </p>
           <span className="text-sm text-gray-600">
             {getPeriodLabel(hiresPeriod)}
           </span>
         </div>
-        <div className="bg-green-50 p-4 rounded-lg shadow">
+        <div className="bg-green-50 p-4 rounded-lg shadow text-center sm:text-left">
           <h3 className="text-lg font-semibold text-green-800">Revenue</h3>
-          <p className="text-3xl font-bold text-green-600">
+          <p className="text-2xl sm:text-3xl font-bold text-green-600">
             MWK{revenueMetrics.revenue.toLocaleString()}
           </p>
           <span className="text-sm text-gray-600">
@@ -170,14 +170,15 @@ const HiresPage = () => {
       </div>
 
       {/* Recent Bookings Table */}
-      <div className="bg-white rounded-lg shadow p-4 mb-10">
+      <div className="bg-white rounded-lg shadow p-4 mb-6 overflow-x-auto">
         <h2 className="text-lg font-semibold mb-4">Recent Bookings</h2>
-        <div className="flex space-x-1 mb-4 border-b">
+
+        <div className="flex flex-wrap gap-2 mb-4 border-b">
           {["pending", "all", "approved", "disapproved"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab as any)}
-              className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
+              className={`px-3 py-1 text-xs sm:text-sm font-medium rounded ${
                 activeTab === tab
                   ? tab === "pending"
                     ? "bg-yellow-500 text-white"
@@ -202,89 +203,80 @@ const HiresPage = () => {
           ))}
         </div>
 
-        {filteredBookings.length === 0 ? (
-          <p className="text-gray-500">No bookings found.</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="text-sm text-gray-500 border-b">
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>Car</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredBookings.map((b) => (
-                  <tr key={b.id} className="border-t">
-                    <td className="py-3 text-sm text-gray-700">{b.name}</td>
-                    <td className="py-3 text-sm text-gray-700">{b.email}</td>
-                    <td className="py-3 text-sm text-gray-700">{b.phone}</td>
-                    <td className="py-3 text-sm text-gray-700">
-                      {getCarName(b.carId)}
-                    </td>
-                    <td className="py-3 text-sm text-gray-700">{b.date}</td>
-                    <td className="py-3 text-sm">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs ${
-                          b.status === "accepted"
-                            ? "bg-green-100 text-green-700"
-                            : b.status === "denied"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-yellow-100 text-yellow-700"
-                        }`}
+        <table className="min-w-full text-left text-sm sm:text-base">
+          <thead>
+            <tr className="text-gray-500 border-b">
+              <th className="px-2 sm:px-4 py-2">Name</th>
+              <th className="px-2 sm:px-4 py-2">Email</th>
+              <th className="px-2 sm:px-4 py-2">Phone</th>
+              <th className="px-2 sm:px-4 py-2">Car</th>
+              <th className="px-2 sm:px-4 py-2">Date</th>
+              <th className="px-2 sm:px-4 py-2">Status</th>
+              <th className="px-2 sm:px-4 py-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredBookings.map((b) => (
+              <tr key={b.id} className="border-t">
+                <td className="px-2 sm:px-4 py-2">{b.name}</td>
+                <td className="px-2 sm:px-4 py-2">{b.email}</td>
+                <td className="px-2 sm:px-4 py-2">{b.phone}</td>
+                <td className="px-2 sm:px-4 py-2">{getCarName(b.carId)}</td>
+                <td className="px-2 sm:px-4 py-2">{b.date}</td>
+                <td className="px-2 sm:px-4 py-2">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs ${
+                      b.status === "accepted"
+                        ? "bg-green-100 text-green-700"
+                        : b.status === "denied"
+                        ? "bg-red-100 text-red-700"
+                        : "bg-yellow-100 text-yellow-700"
+                    }`}
+                  >
+                    {b.status === "accepted"
+                      ? "✓ Approved"
+                      : b.status === "denied"
+                      ? "✗ Denied"
+                      : "⏳ Pending"}
+                  </span>
+                </td>
+                <td className="px-2 sm:px-4 py-2">
+                  {b.status === "pending" && (
+                    <div className="flex gap-1 sm:gap-2 flex-wrap">
+                      <button
+                        onClick={() => {
+                          setSelectedBooking(b);
+                          setActionType("accept");
+                          setShowConfirmModal(true);
+                        }}
+                        className="text-green-600 hover:bg-green-100 p-1 sm:p-2 rounded"
                       >
-                        {b.status === "accepted"
-                          ? "✓ Approved"
-                          : b.status === "denied"
-                          ? "✗ Denied"
-                          : "⏳ Pending"}
-                      </span>
-                    </td>
-                    <td className="py-3 text-sm">
-                      {b.status === "pending" && (
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => {
-                              setSelectedBooking(b);
-                              setActionType("accept");
-                              setShowConfirmModal(true);
-                            }}
-                            className="text-green-600 hover:bg-green-100 p-2 rounded"
-                          >
-                            ✓
-                          </button>
-                          <button
-                            onClick={() => {
-                              setSelectedBooking(b);
-                              setActionType("deny");
-                              setShowConfirmModal(true);
-                            }}
-                            className="text-red-600 hover:bg-red-100 p-2 rounded"
-                          >
-                            ✗
-                          </button>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                        ✓
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedBooking(b);
+                          setActionType("deny");
+                          setShowConfirmModal(true);
+                        }}
+                        className="text-red-600 hover:bg-red-100 p-1 sm:p-2 rounded"
+                      >
+                        ✗
+                      </button>
+                    </div>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {/* Hire History Table */}
-      <div className="bg-white rounded-lg shadow p-4 mb-10">
+      <div className="bg-white rounded-lg shadow p-4 mb-6 overflow-x-auto">
         <h2 className="text-lg font-semibold mb-4">Hire History</h2>
-
-        <div className="flex gap-4 mb-4">
-          <div>
+        <div className="flex flex-col sm:flex-row gap-4 mb-4">
+          <div className="flex-1">
             <label className="block text-sm font-medium text-gray-700">
               Start Month
             </label>
@@ -292,10 +284,10 @@ const HiresPage = () => {
               type="month"
               value={startMonth}
               onChange={(e) => setStartMonth(e.target.value)}
-              className="p-2 border rounded"
+              className="w-full p-2 border rounded"
             />
           </div>
-          <div>
+          <div className="flex-1">
             <label className="block text-sm font-medium text-gray-700">
               End Month
             </label>
@@ -303,62 +295,52 @@ const HiresPage = () => {
               type="month"
               value={endMonth}
               onChange={(e) => setEndMonth(e.target.value)}
-              className="p-2 border rounded"
+              className="w-full p-2 border rounded"
             />
           </div>
         </div>
 
-        {filteredHistoryBookings.length === 0 ? (
-          <p className="text-gray-500">
-            No hire bookings found for the selected period.
-          </p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="text-sm text-gray-500 border-b">
-                  <th>Name</th>
-                  <th>Car Taken</th>
-                  <th>Payment</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredHistoryBookings.map((b) => (
-                  <tr key={b.id} className="border-t">
-                    <td className="py-3 text-sm text-gray-700">{b.name}</td>
-                    <td className="py-3 text-sm text-gray-700">
-                      Toyot Axio
-                    </td>
-                    <td className="py-3 text-sm text-gray-700">
-                      MWK{getPayment(b).toLocaleString()}
-                    </td>
-                    <td className="py-3 text-sm text-gray-700">{b.date}</td>
-                    <td className="py-3 text-sm">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs ${
-                          b.status === "accepted"
-                            ? "bg-green-100 text-green-700"
-                            : b.status === "denied"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-yellow-100 text-yellow-700"
-                        }`}
-                      >
-                        {b.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <table className="min-w-full text-left text-sm sm:text-base">
+          <thead>
+            <tr className="text-gray-500 border-b">
+              <th className="px-2 sm:px-4 py-2">Name</th>
+              <th className="px-2 sm:px-4 py-2">Car Taken</th>
+              <th className="px-2 sm:px-4 py-2">Payment</th>
+              <th className="px-2 sm:px-4 py-2">Date</th>
+              <th className="px-2 sm:px-4 py-2">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredHistoryBookings.map((b) => (
+              <tr key={b.id} className="border-t">
+                <td className="px-2 sm:px-4 py-2">{b.name}</td>
+                <td className="px-2 sm:px-4 py-2">{getCarName(b.carId)}</td>
+                <td className="px-2 sm:px-4 py-2">
+                  MWK{getPayment(b).toLocaleString()}
+                </td>
+                <td className="px-2 sm:px-4 py-2">{b.date}</td>
+                <td className="px-2 sm:px-4 py-2">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs ${
+                      b.status === "accepted"
+                        ? "bg-green-100 text-green-700"
+                        : b.status === "denied"
+                        ? "bg-red-100 text-red-700"
+                        : "bg-yellow-100 text-yellow-700"
+                    }`}
+                  >
+                    {b.status}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       {/* Confirmation Modal */}
       {showConfirmModal && selectedBooking && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
             <h3 className="text-lg font-semibold mb-4">
               {actionType === "accept" ? "Confirm Approval" : "Confirm Denial"}
@@ -382,7 +364,7 @@ const HiresPage = () => {
                 />
               </div>
             )}
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <button
                 onClick={() => {
                   setShowConfirmModal(false);

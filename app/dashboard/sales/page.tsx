@@ -91,25 +91,27 @@ const SalesPage = () => {
   return (
     <main className="w-full transition-all duration-300 mt-5 p-4 md:p-6">
       {/* Header */}
-      <div className="mb-6 pb-4 border-b border-gray-200 flex justify-between items-center">
+      <div className="mb-6 pb-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Sales</h1>
-          <p className="text-gray-500 text-sm">Manage car sales</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
+            Sales
+          </h1>
+          <p className="text-gray-500 text-sm sm:text-base">Manage car sales</p>
         </div>
       </div>
 
       {/* Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div className="bg-blue-50 p-4 rounded-lg shadow relative">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div className="bg-blue-50 p-3 sm:p-4 rounded-lg shadow">
           <h3 className="text-lg font-semibold text-blue-800">Sales</h3>
           <p className="text-2xl font-bold text-blue-600">
             {salesBookings.filter((b) => b.status === "accepted").length}
           </p>
         </div>
-        <div className="bg-green-50 p-4 rounded-lg shadow relative">
+        <div className="bg-green-50 p-3 sm:p-4 rounded-lg shadow">
           <h3 className="text-lg font-semibold text-green-800">Revenue</h3>
           <p className="text-2xl font-bold text-green-600">
-            MWK
+            MWK{" "}
             {salesBookings
               .filter((b) => b.status === "accepted")
               .reduce((sum, b) => sum + (b.payment || getPayment(b.carId)), 0)
@@ -118,192 +120,112 @@ const SalesPage = () => {
         </div>
       </div>
 
-      {/* Inspection Bookings Table */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
-        <h2 className="text-lg font-semibold mb-4">Inspection Bookings</h2>
-
-        {/* Tabs */}
-        <div className="flex space-x-1 mb-4 border-b">
+      {/* Tabs */}
+      <div className="flex flex-wrap gap-1 mb-4 border-b">
+        {[
+          { key: "pending", label: "Pending", color: "yellow" },
+          { key: "all", label: "All", color: "blue" },
+          { key: "approved", label: "Approved", color: "green" },
+          { key: "disapproved", label: "Disapproved", color: "red" },
+        ].map((tab) => (
           <button
-            onClick={() => setActiveTab("pending")}
-            className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
-              activeTab === "pending"
-                ? "bg-yellow-500 text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key as any)}
+            className={`px-3 py-1 text-sm font-medium rounded-t-lg ${
+              activeTab === tab.key
+                ? `bg-${tab.color}-500 text-white`
+                : `bg-gray-100 text-gray-600 hover:bg-gray-200`
             }`}
           >
-            Pending (
-            {salesBookings.filter((b) => b.status === "pending").length})
+            {tab.label} (
+            {
+              salesBookings.filter((b) => {
+                if (tab.key === "all") return true;
+                if (tab.key === "approved") return b.status === "accepted";
+                if (tab.key === "pending") return b.status === "pending";
+                if (tab.key === "disapproved") return b.status === "denied";
+                return true;
+              }).length
+            }
+            )
           </button>
-          <button
-            onClick={() => setActiveTab("all")}
-            className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
-              activeTab === "all"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            All ({salesBookings.length})
-          </button>
-          <button
-            onClick={() => setActiveTab("approved")}
-            className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
-              activeTab === "approved"
-                ? "bg-green-500 text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            Approved (
-            {salesBookings.filter((b) => b.status === "accepted").length})
-          </button>
-          <button
-            onClick={() => setActiveTab("disapproved")}
-            className={`px-4 py-2 text-sm font-medium rounded-t-lg ${
-              activeTab === "disapproved"
-                ? "bg-red-500 text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            Disapproved (
-            {salesBookings.filter((b) => b.status === "denied").length})
-          </button>
-        </div>
-
-        {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="text-sm text-gray-500 border-b">
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Car</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {salesBookings
-                .filter((b) => {
-                  if (activeTab === "all") return true;
-                  if (activeTab === "approved") return b.status === "accepted";
-                  if (activeTab === "pending") return b.status === "pending";
-                  if (activeTab === "disapproved") return b.status === "denied";
-                  return true;
-                })
-                .map((booking) => (
-                  <tr key={booking.id} className="border-t">
-                    <td className="py-3 text-sm text-gray-700">
-                      {booking.name}
-                    </td>
-                    <td className="py-3 text-sm text-gray-700">
-                      {booking.email}
-                    </td>
-                    <td className="py-3 text-sm text-gray-700">
-                      {booking.phone}
-                    </td>
-                    <td className="py-3 text-sm text-gray-700">
-                      {getCarName(booking.carId)}
-                    </td>
-                    <td className="py-3 text-sm text-gray-700">
-                      {booking.date}
-                    </td>
-                    <td className="py-3 text-sm">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs flex items-center gap-1 ${
-                          booking.status === "accepted"
-                            ? "bg-green-100 text-green-700"
-                            : booking.status === "denied"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-yellow-100 text-yellow-700"
-                        }`}
-                      >
-                        {booking.status === "accepted" && "✓ Approved"}
-                        {booking.status === "denied" && "✗ Disapproved"}
-                        {booking.status === "pending" && "⏳ Pending"}
-                      </span>
-                    </td>
-                    <td className="py-3 text-sm">
-                      {booking.status === "pending" && (
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => {
-                              setSelectedBooking(booking);
-                              setActionType("accept");
-                              setShowConfirmModal(true);
-                            }}
-                            className="text-green-600 hover:bg-green-100 p-2 rounded"
-                          >
-                            ✓
-                          </button>
-                          <button
-                            onClick={() => {
-                              setSelectedBooking(booking);
-                              setActionType("deny");
-                              setShowConfirmModal(true);
-                            }}
-                            className="text-red-600 hover:bg-red-100 p-2 rounded"
-                          >
-                            ✗
-                          </button>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
+        ))}
       </div>
 
-      {/* Sales History Table */}
-      <div className="bg-white rounded-lg shadow p-4">
-        <h2 className="text-lg font-semibold mb-4">Sales History</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="text-sm text-gray-500 border-b">
-                <th>Name</th>
-                <th>Car Purchased</th>
-                <th>Payment</th>
-                <th>Payment Method</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {salesBookings
-                .filter((b) => b.status === "accepted")
-                .map((booking) => (
-                  <tr key={booking.id} className="border-t">
-                    <td className="py-3 text-sm text-gray-700">
-                      {booking.name}
-                    </td>
-                    <td className="py-3 text-sm text-gray-700">
-                      {getCarName(booking.carId)}
-                    </td>
-                    <td className="py-3 text-sm text-gray-700">
-                      MWK
-                      {(
-                        booking.payment || getPayment(booking.carId)
-                      ).toLocaleString()}
-                    </td>
-                    <td className="py-3 text-sm text-gray-700">Cash</td>
-                    <td className="py-3 text-sm text-gray-700">
-                      {booking.date}
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
+      {/* Bookings Table / Mobile Cards */}
+      <div className="grid gap-4">
+        {salesBookings
+          .filter((b) => {
+            if (activeTab === "all") return true;
+            if (activeTab === "approved") return b.status === "accepted";
+            if (activeTab === "pending") return b.status === "pending";
+            if (activeTab === "disapproved") return b.status === "denied";
+            return true;
+          })
+          .map((booking) => (
+            <div
+              key={booking.id}
+              className="bg-white rounded-lg shadow p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0"
+            >
+              <div className="flex-1">
+                <p className="text-sm font-semibold">{booking.name}</p>
+                <p className="text-xs text-gray-500">{booking.email}</p>
+                <p className="text-xs text-gray-500">{booking.phone}</p>
+                <p className="text-sm mt-1 font-medium">
+                  {getCarName(booking.carId)}
+                </p>
+                <p className="text-xs text-gray-500">{booking.date}</p>
+              </div>
+              <div className="flex items-center gap-2 mt-2 sm:mt-0">
+                <span
+                  className={`px-2 py-1 rounded-full text-xs ${
+                    booking.status === "accepted"
+                      ? "bg-green-100 text-green-700"
+                      : booking.status === "denied"
+                      ? "bg-red-100 text-red-700"
+                      : "bg-yellow-100 text-yellow-700"
+                  }`}
+                >
+                  {booking.status === "accepted"
+                    ? "✓ Approved"
+                    : booking.status === "denied"
+                    ? "✗ Disapproved"
+                    : "⏳ Pending"}
+                </span>
+                {booking.status === "pending" && (
+                  <div className="flex gap-1">
+                    <button
+                      onClick={() => {
+                        setSelectedBooking(booking);
+                        setActionType("accept");
+                        setShowConfirmModal(true);
+                      }}
+                      className="text-green-600 hover:bg-green-100 p-2 rounded"
+                    >
+                      ✓
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedBooking(booking);
+                        setActionType("deny");
+                        setShowConfirmModal(true);
+                      }}
+                      className="text-red-600 hover:bg-red-100 p-2 rounded"
+                    >
+                      ✗
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
       </div>
 
       {/* Confirmation Modal */}
       {showConfirmModal && selectedBooking && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h3 className="text-lg font-semibold mb-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h3 className="text-lg font-semibold mb-3">
               {actionType === "accept" ? "Confirm Approval" : "Confirm Denial"}
             </h3>
             <p className="text-gray-600 mb-4">
@@ -312,7 +234,7 @@ const SalesPage = () => {
               <strong>{selectedBooking.name}</strong> (
               {getCarName(selectedBooking.carId)})?
             </p>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <button
                 onClick={() => {
                   setShowConfirmModal(false);

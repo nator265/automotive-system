@@ -36,7 +36,6 @@ const ClientsPage = () => {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
 
   useEffect(() => {
-    // Dummy bookings
     const dummyBookings: Booking[] = [
       {
         id: "b1",
@@ -59,7 +58,6 @@ const ClientsPage = () => {
       },
     ];
 
-    // Dummy sales
     const dummySales: Sale[] = [
       {
         id: "s1",
@@ -82,19 +80,12 @@ const ClientsPage = () => {
     setBookings(dummyBookings);
     setSales(dummySales);
 
-    // Extract unique clients
     const clientMap = new Map<string, Client>();
-
     dummyBookings.forEach((b) => {
       if (!clientMap.has(b.name)) {
-        clientMap.set(b.name, {
-          name: b.name,
-          email: b.email,
-          phone: b.phone,
-        });
+        clientMap.set(b.name, { name: b.name, email: b.email, phone: b.phone });
       }
     });
-
     dummySales.forEach((s) => {
       if (s.buyerName && !clientMap.has(s.buyerName)) {
         clientMap.set(s.buyerName, {
@@ -104,7 +95,6 @@ const ClientsPage = () => {
         });
       }
     });
-
     setClients(Array.from(clientMap.values()));
   }, []);
 
@@ -119,29 +109,31 @@ const ClientsPage = () => {
   return (
     <main className="w-full transition-all duration-300 mt-5 p-4 md:p-6">
       <div className="mb-6 pb-4 border-b border-gray-200">
-        <h1 className="text-3xl font-bold text-gray-800">Clients</h1>
-        <p className="text-gray-500 text-sm">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
+          Clients
+        </h1>
+        <p className="text-gray-500 text-sm sm:text-base">
           List of clients and their activity history
         </p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg p-5 border border-gray-100">
-        <h2 className="text-lg font-semibold mb-4">All Clients</h2>
+      <div className="bg-white rounded-xl shadow-lg p-4 sm:p-5 border border-gray-100">
+        <h2 className="text-lg sm:text-xl font-semibold mb-4">All Clients</h2>
 
         {clients.length === 0 ? (
           <p className="text-gray-500">No clients found yet.</p>
         ) : (
           <div className="overflow-x-auto rounded-lg border border-gray-200">
-            <table className="w-full table-auto text-sm">
+            <table className="w-full table-auto text-sm sm:text-base">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-4 py-3 text-left font-medium text-gray-700">
+                  <th className="px-3 sm:px-4 py-2 text-left font-medium text-gray-700">
                     Name
                   </th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-700">
+                  <th className="px-3 sm:px-4 py-2 text-left font-medium text-gray-700">
                     Email
                   </th>
-                  <th className="px-4 py-3 text-left font-medium text-gray-700">
+                  <th className="px-3 sm:px-4 py-2 text-left font-medium text-gray-700">
                     Phone
                   </th>
                 </tr>
@@ -153,9 +145,15 @@ const ClientsPage = () => {
                     onClick={() => setSelectedClient(client)}
                     className="hover:bg-gray-100 cursor-pointer transition"
                   >
-                    <td className="px-4 py-3 border-t">{client.name}</td>
-                    <td className="px-4 py-3 border-t">{client.email}</td>
-                    <td className="px-4 py-3 border-t">{client.phone}</td>
+                    <td className="px-3 sm:px-4 py-2 border-t">
+                      {client.name}
+                    </td>
+                    <td className="px-3 sm:px-4 py-2 border-t">
+                      {client.email}
+                    </td>
+                    <td className="px-3 sm:px-4 py-2 border-t">
+                      {client.phone}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -164,51 +162,52 @@ const ClientsPage = () => {
         )}
       </div>
 
-      {/* MODERN MODAL */}
+      {/* Modal */}
       {selectedClient && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-start justify-center pt-20 z-50">
-          <div className="bg-white w-full max-w-4xl mx-4 rounded-xl shadow-xl p-6 animate-[slideDown_.25s_ease-out]">
-            {/* Header */}
-            <div className="flex items-center justify-between border-b pb-3 mb-4">
-              <h3 className="text-xl font-bold text-gray-800">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-start justify-center pt-20 z-50 p-2 sm:p-4 overflow-y-auto">
+          <div className="bg-white w-full sm:w-11/12 md:max-w-4xl mx-auto rounded-xl shadow-xl p-4 sm:p-6 animate-[slideDown_.25s_ease-out]">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b pb-3 mb-4">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-800">
                 {selectedClient.name} — History
               </h3>
               <button
                 onClick={() => setSelectedClient(null)}
-                className="px-3 py-1 rounded-md bg-gray-200 hover:bg-gray-300 transition"
+                className="mt-2 sm:mt-0 px-3 py-1 rounded-md bg-gray-200 hover:bg-gray-300 transition"
               >
                 Close
               </button>
             </div>
 
-            {/* Scrollable Content */}
-            <div className="max-h-[70vh] overflow-y-auto pr-2 space-y-8">
-              {/* HIRES TABLE */}
+            <div className="max-h-[70vh] overflow-y-auto pr-2 space-y-6">
+              {/* Rentals / Hires */}
               <div>
-                <h4 className="text-lg font-semibold mb-3">
+                <h4 className="text-lg sm:text-xl font-semibold mb-3">
                   🚗 Rentals / Hires
                 </h4>
-
                 {historyFor(selectedClient).hires.length === 0 ? (
                   <p className="text-gray-500">No rental history.</p>
                 ) : (
                   <div className="overflow-x-auto rounded-lg border border-gray-200">
-                    <table className="w-full text-sm">
+                    <table className="w-full text-sm sm:text-base">
                       <thead className="bg-gray-50 border-b">
                         <tr>
-                          <th className="px-4 py-2 text-left">Car ID</th>
-                          <th className="px-4 py-2 text-left">Mode</th>
-                          <th className="px-4 py-2 text-left">Date</th>
-                          <th className="px-4 py-2 text-left">Notes</th>
+                          <th className="px-2 sm:px-4 py-2 text-left">
+                            Car ID
+                          </th>
+                          <th className="px-2 sm:px-4 py-2 text-left">Mode</th>
+                          <th className="px-2 sm:px-4 py-2 text-left">Date</th>
+                          <th className="px-2 sm:px-4 py-2 text-left">Notes</th>
                         </tr>
                       </thead>
                       <tbody>
                         {historyFor(selectedClient).hires.map((h) => (
                           <tr key={h.id} className="border-t hover:bg-gray-100">
-                            <td className="px-4 py-2">{h.carId}</td>
-                            <td className="px-4 py-2">{h.mode}</td>
-                            <td className="px-4 py-2">{h.date}</td>
-                            <td className="px-4 py-2">{h.notes || "—"}</td>
+                            <td className="px-2 sm:px-4 py-2">{h.carId}</td>
+                            <td className="px-2 sm:px-4 py-2">{h.mode}</td>
+                            <td className="px-2 sm:px-4 py-2">{h.date}</td>
+                            <td className="px-2 sm:px-4 py-2">
+                              {h.notes || "—"}
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -217,28 +216,31 @@ const ClientsPage = () => {
                 )}
               </div>
 
-              {/* PURCHASES TABLE */}
+              {/* Purchases */}
               <div>
-                <h4 className="text-lg font-semibold mb-3">💰 Purchases</h4>
-
+                <h4 className="text-lg sm:text-xl font-semibold mb-3">
+                  💰 Purchases
+                </h4>
                 {historyFor(selectedClient).buys.length === 0 ? (
                   <p className="text-gray-500">No purchase history.</p>
                 ) : (
                   <div className="overflow-x-auto rounded-lg border border-gray-200">
-                    <table className="w-full text-sm">
+                    <table className="w-full text-sm sm:text-base">
                       <thead className="bg-gray-50 border-b">
                         <tr>
-                          <th className="px-4 py-2 text-left">Car ID</th>
-                          <th className="px-4 py-2 text-left">Price</th>
-                          <th className="px-4 py-2 text-left">Date</th>
+                          <th className="px-2 sm:px-4 py-2 text-left">
+                            Car ID
+                          </th>
+                          <th className="px-2 sm:px-4 py-2 text-left">Price</th>
+                          <th className="px-2 sm:px-4 py-2 text-left">Date</th>
                         </tr>
                       </thead>
                       <tbody>
                         {historyFor(selectedClient).buys.map((s) => (
                           <tr key={s.id} className="border-t hover:bg-gray-100">
-                            <td className="px-4 py-2">{s.carId}</td>
-                            <td className="px-4 py-2">{s.price}</td>
-                            <td className="px-4 py-2">{s.createdAt}</td>
+                            <td className="px-2 sm:px-4 py-2">{s.carId}</td>
+                            <td className="px-2 sm:px-4 py-2">{s.price}</td>
+                            <td className="px-2 sm:px-4 py-2">{s.createdAt}</td>
                           </tr>
                         ))}
                       </tbody>
