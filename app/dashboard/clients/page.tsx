@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 
 type Booking = {
   id: string;
@@ -36,51 +36,77 @@ const ClientsPage = () => {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
 
   useEffect(() => {
-    fetchBookings();
-    fetchSales();
+    // Dummy bookings
+    const dummyBookings: Booking[] = [
+      {
+        id: "b1",
+        carId: "C001",
+        mode: "Daily",
+        name: "John Doe",
+        email: "john@example.com",
+        phone: "1234567890",
+        date: "2025-12-01",
+        notes: "Needs child seat",
+      },
+      {
+        id: "b2",
+        carId: "C002",
+        mode: "Weekly",
+        name: "Jane Smith",
+        email: "jane@example.com",
+        phone: "0987654321",
+        date: "2025-11-28",
+      },
+    ];
+
+    // Dummy sales
+    const dummySales: Sale[] = [
+      {
+        id: "s1",
+        carId: "C003",
+        buyerName: "Alice Johnson",
+        buyerEmail: "alice@example.com",
+        price: 25000,
+        createdAt: "2025-11-20",
+      },
+      {
+        id: "s2",
+        carId: "C001",
+        buyerName: "John Doe",
+        buyerEmail: "john@example.com",
+        price: 18000,
+        createdAt: "2025-12-02",
+      },
+    ];
+
+    setBookings(dummyBookings);
+    setSales(dummySales);
+
+    // Extract unique clients
+    const clientMap = new Map<string, Client>();
+
+    dummyBookings.forEach((b) => {
+      if (!clientMap.has(b.name)) {
+        clientMap.set(b.name, {
+          name: b.name,
+          email: b.email,
+          phone: b.phone,
+        });
+      }
+    });
+
+    dummySales.forEach((s) => {
+      if (s.buyerName && !clientMap.has(s.buyerName)) {
+        clientMap.set(s.buyerName, {
+          name: s.buyerName,
+          email: s.buyerEmail || "",
+          phone: "",
+        });
+      }
+    });
+
+    setClients(Array.from(clientMap.values()));
   }, []);
-
-  async function fetchBookings() {
-    try {
-      const res = await fetch("/api/bookings");
-      const json = await res.json();
-      setBookings(json.bookings || []);
-      const clientMap = new Map<string, Client>();
-      (json.bookings || []).forEach((b: Booking) => {
-        if (!clientMap.has(b.name)) {
-          clientMap.set(b.name, {
-            name: b.name,
-            email: b.email,
-            phone: b.phone,
-          });
-        }
-      });
-      setClients(Array.from(clientMap.values()));
-    } catch (err) {
-      console.error("fetch bookings error", err);
-    }
-  }
-
-  async function fetchSales() {
-    try {
-      const res = await fetch("/api/sales");
-      const json = await res.json();
-      setSales(json.sales || []);
-      const clientMap = new Map<string, Client>();
-      (json.sales || []).forEach((s: Sale) => {
-        if (s.buyerName && !clientMap.has(s.buyerName)) {
-          clientMap.set(s.buyerName, {
-            name: s.buyerName,
-            email: s.buyerEmail || "",
-            phone: "",
-          });
-        }
-      });
-      setClients((prev) => [...prev, ...Array.from(clientMap.values())]);
-    } catch (err) {
-      console.error("fetch sales error", err);
-    }
-  }
 
   const historyFor = (client: Client) => {
     const hires = bookings.filter((b) => b.name === client.name);

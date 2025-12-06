@@ -1,13 +1,38 @@
 [
   {
-    "id": "BK-TEST-1690660000000",
-    "carId": "car_003",
+    "id": "BK-1",
+    "carId": "CAR-101",
     "mode": "hire",
-    "name": "Automated Test",
-    "email": "auto@test.local",
-    "phone": "+1000000000",
-    "date": "2025-12-01",
-    "notes": "Programmatic booking test (injected)",
-    "createdAt": "2025-11-28T00:00:00.000Z"
+    "name": "John Doe",
+    "email": "john@example.com",
+    "phone": "1234567890",
+    "date": "2025-12-10",
+    "notes": "Please prepare GPS",
+    "status": "pending",
+    "createdAt": "2025-12-01T10:00:00.000Z"
+  },
+  {
+    "id": "BK-2",
+    "carId": "CAR-102",
+    "mode": "buy",
+    "name": "Jane Smith",
+    "email": "jane@example.com",
+    "phone": "0987654321",
+    "date": "2025-12-15",
+    "notes": "",
+    "status": "accepted",
+    "createdAt": "2025-12-02T11:30:00.000Z"
+  },
+  {
+    "id": "BK-3",
+    "carId": "CAR-103",
+    "mode": "hire",
+    "name": "Alice Johnson",
+    "email": "alice@example.com",
+    "phone": "5551234567",
+    "date": "2025-12-20",
+    "notes": "Need child seat",
+    "status": "denied",
+    "createdAt": "2025-12-03T14:20:00.000Z"
   }
 ]
