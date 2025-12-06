@@ -1,0 +1,13 @@
+[
+  {
+    "id": "BK-TEST-1690660000000",
+    "carId": "car_003",
+    "mode": "hire",
+    "name": "Automated Test",
+    "email": "auto@test.local",
+    "phone": "+1000000000",
+    "date": "2025-12-01",
+    "notes": "Programmatic booking test (injected)",
+    "createdAt": "2025-11-28T00:00:00.000Z"
+  }
+]

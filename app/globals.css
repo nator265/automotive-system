@@ -1,26 +1,97 @@
+/* Tailwind v4 import */
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Global body styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-poppins), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #ffffff;
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+h1 {
+  font-size: 2.25rem; /* text-4xl */
+  font-weight: 700; /* font-bold */
+  line-height: 2.5rem; /* leading-tight */
+  margin-bottom: 1rem; /* mb-4 */
 }
+h2 {
+  font-size: 1.875rem; /* text-3xl */
+  font-weight: 600; /* font-semibold */
+  line-height: 2.25rem; /* leading-snug */
+  margin-bottom: 0.75rem; /* mb-3 */
+}
+h3 {
+  font-size: 1.5rem; /* text-2xl */
+  font-weight: 600; /* font-semibold */
+  line-height: 2rem; /* leading-snug */
+  margin-bottom: 0.5rem; /* mb-2 */
+}
+p {
+  font-size: 1rem; /* text-base */
+  line-height: 1.5rem; /* leading-relaxed */
+  margin-bottom: 1rem; /* mb-4 */
+}
+/* Custom utilities/components */
+@layer components {
+  /* Container utility */
+  .container {
+    max-width: 72rem; /* equivalent to max-w-6xl */
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem; /* px-6 */
+    padding-right: 1.5rem;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Primary button utility */
+  .btn-primary {
+    background-color: #60a5fa; /* Tailwind blue-400 */
+    color: white;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* Fade-in animation utility */
+  .reveal {
+    opacity: 0;
+    transform: translateY(8px);
+    animation: fadeInUp 0.6s ease forwards;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Keyframes */
+@layer utilities {
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Typewriter caret */
+  .typewriter-caret {
+    display: inline-block;
+    width: 1ch;
+    animation: blink 1s steps(2, end) infinite;
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
 }
