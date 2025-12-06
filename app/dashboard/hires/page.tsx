@@ -149,7 +149,7 @@ const HiresPage = () => {
     <main className="w-full mt-5 p-4 md:p-6">
       {/* Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        <div className="bg-blue-50 p-4 rounded-lg shadow text-center sm:text-left">
+        <div className="bg-blue-50 p-4 rounded-lg shadow text-left">
           <h3 className="text-lg font-semibold text-blue-800">Hires</h3>
           <p className="text-2xl sm:text-3xl font-bold text-blue-600">
             {hiresMetrics.hires}
@@ -158,7 +158,7 @@ const HiresPage = () => {
             {getPeriodLabel(hiresPeriod)}
           </span>
         </div>
-        <div className="bg-green-50 p-4 rounded-lg shadow text-center sm:text-left">
+        <div className="bg-green-50 p-4 rounded-lg shadow text-left">
           <h3 className="text-lg font-semibold text-green-800">Revenue</h3>
           <p className="text-2xl sm:text-3xl font-bold text-green-600">
             MWK{revenueMetrics.revenue.toLocaleString()}
@@ -203,73 +203,75 @@ const HiresPage = () => {
           ))}
         </div>
 
-        <table className="min-w-full text-left text-sm sm:text-base">
-          <thead>
-            <tr className="text-gray-500 border-b">
-              <th className="px-2 sm:px-4 py-2">Name</th>
-              <th className="px-2 sm:px-4 py-2">Email</th>
-              <th className="px-2 sm:px-4 py-2">Phone</th>
-              <th className="px-2 sm:px-4 py-2">Car</th>
-              <th className="px-2 sm:px-4 py-2">Date</th>
-              <th className="px-2 sm:px-4 py-2">Status</th>
-              <th className="px-2 sm:px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredBookings.map((b) => (
-              <tr key={b.id} className="border-t">
-                <td className="px-2 sm:px-4 py-2">{b.name}</td>
-                <td className="px-2 sm:px-4 py-2">{b.email}</td>
-                <td className="px-2 sm:px-4 py-2">{b.phone}</td>
-                <td className="px-2 sm:px-4 py-2">{getCarName(b.carId)}</td>
-                <td className="px-2 sm:px-4 py-2">{b.date}</td>
-                <td className="px-2 sm:px-4 py-2">
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs ${
-                      b.status === "accepted"
-                        ? "bg-green-100 text-green-700"
-                        : b.status === "denied"
-                        ? "bg-red-100 text-red-700"
-                        : "bg-yellow-100 text-yellow-700"
-                    }`}
-                  >
-                    {b.status === "accepted"
-                      ? "✓ Approved"
-                      : b.status === "denied"
-                      ? "✗ Denied"
-                      : "⏳ Pending"}
-                  </span>
-                </td>
-                <td className="px-2 sm:px-4 py-2">
-                  {b.status === "pending" && (
-                    <div className="flex gap-1 sm:gap-2 flex-wrap">
-                      <button
-                        onClick={() => {
-                          setSelectedBooking(b);
-                          setActionType("accept");
-                          setShowConfirmModal(true);
-                        }}
-                        className="text-green-600 hover:bg-green-100 p-1 sm:p-2 rounded"
-                      >
-                        ✓
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelectedBooking(b);
-                          setActionType("deny");
-                          setShowConfirmModal(true);
-                        }}
-                        className="text-red-600 hover:bg-red-100 p-1 sm:p-2 rounded"
-                      >
-                        ✗
-                      </button>
-                    </div>
-                  )}
-                </td>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-left text-sm sm:text-base">
+            <thead>
+              <tr className="text-gray-500 border-b">
+                <th className="px-2 sm:px-4 py-2">Name</th>
+                <th className="px-2 sm:px-4 py-2">Email</th>
+                <th className="px-2 sm:px-4 py-2">Phone</th>
+                <th className="px-2 sm:px-4 py-2">Car</th>
+                <th className="px-2 sm:px-4 py-2">Date</th>
+                <th className="px-2 sm:px-4 py-2">Status</th>
+                <th className="px-2 sm:px-4 py-2">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredBookings.map((b) => (
+                <tr key={b.id} className="border-t">
+                  <td className="px-2 sm:px-4 py-2">{b.name}</td>
+                  <td className="px-2 sm:px-4 py-2">{b.email}</td>
+                  <td className="px-2 sm:px-4 py-2">{b.phone}</td>
+                  <td className="px-2 sm:px-4 py-2">{getCarName(b.carId)}</td>
+                  <td className="px-2 sm:px-4 py-2">{b.date}</td>
+                  <td className="px-2 sm:px-4 py-2">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs ${
+                        b.status === "accepted"
+                          ? "bg-green-100 text-green-700"
+                          : b.status === "denied"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-yellow-100 text-yellow-700"
+                      }`}
+                    >
+                      {b.status === "accepted"
+                        ? "✓ Approved"
+                        : b.status === "denied"
+                        ? "✗ Denied"
+                        : "⏳ Pending"}
+                    </span>
+                  </td>
+                  <td className="px-2 sm:px-4 py-2">
+                    {b.status === "pending" && (
+                      <div className="flex gap-1 sm:gap-2 flex-wrap">
+                        <button
+                          onClick={() => {
+                            setSelectedBooking(b);
+                            setActionType("accept");
+                            setShowConfirmModal(true);
+                          }}
+                          className="text-green-600 hover:bg-green-100 p-1 sm:p-2 rounded"
+                        >
+                          ✓
+                        </button>
+                        <button
+                          onClick={() => {
+                            setSelectedBooking(b);
+                            setActionType("deny");
+                            setShowConfirmModal(true);
+                          }}
+                          className="text-red-600 hover:bg-red-100 p-1 sm:p-2 rounded"
+                        >
+                          ✗
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Hire History Table */}
@@ -300,42 +302,44 @@ const HiresPage = () => {
           </div>
         </div>
 
-        <table className="min-w-full text-left text-sm sm:text-base">
-          <thead>
-            <tr className="text-gray-500 border-b">
-              <th className="px-2 sm:px-4 py-2">Name</th>
-              <th className="px-2 sm:px-4 py-2">Car Taken</th>
-              <th className="px-2 sm:px-4 py-2">Payment</th>
-              <th className="px-2 sm:px-4 py-2">Date</th>
-              <th className="px-2 sm:px-4 py-2">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredHistoryBookings.map((b) => (
-              <tr key={b.id} className="border-t">
-                <td className="px-2 sm:px-4 py-2">{b.name}</td>
-                <td className="px-2 sm:px-4 py-2">{getCarName(b.carId)}</td>
-                <td className="px-2 sm:px-4 py-2">
-                  MWK{getPayment(b).toLocaleString()}
-                </td>
-                <td className="px-2 sm:px-4 py-2">{b.date}</td>
-                <td className="px-2 sm:px-4 py-2">
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs ${
-                      b.status === "accepted"
-                        ? "bg-green-100 text-green-700"
-                        : b.status === "denied"
-                        ? "bg-red-100 text-red-700"
-                        : "bg-yellow-100 text-yellow-700"
-                    }`}
-                  >
-                    {b.status}
-                  </span>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-left text-sm sm:text-base">
+            <thead>
+              <tr className="text-gray-500 border-b">
+                <th className="px-2 sm:px-4 py-2">Name</th>
+                <th className="px-2 sm:px-4 py-2">Car Taken</th>
+                <th className="px-2 sm:px-4 py-2">Payment</th>
+                <th className="px-2 sm:px-4 py-2">Date</th>
+                <th className="px-2 sm:px-4 py-2">Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredHistoryBookings.map((b) => (
+                <tr key={b.id} className="border-t">
+                  <td className="px-2 sm:px-4 py-2">{b.name}</td>
+                  <td className="px-2 sm:px-4 py-2">{getCarName(b.carId)}</td>
+                  <td className="px-2 sm:px-4 py-2">
+                    MWK{getPayment(b).toLocaleString()}
+                  </td>
+                  <td className="px-2 sm:px-4 py-2">{b.date}</td>
+                  <td className="px-2 sm:px-4 py-2">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs ${
+                        b.status === "accepted"
+                          ? "bg-green-100 text-green-700"
+                          : b.status === "denied"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-yellow-100 text-yellow-700"
+                      }`}
+                    >
+                      {b.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Confirmation Modal */}
