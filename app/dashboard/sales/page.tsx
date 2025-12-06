@@ -123,7 +123,7 @@ const SalesPage = () => {
       return bookingDate >= periodAgo && b.status === "accepted";
     });
 
-    const totalRevenue = recentSales.reduce((sum: number, b: Booking) => sum + getPayment(b.carId), 0);
+    const totalRevenue = 300000000;
 
     return { sales: recentSales.length, revenue: totalRevenue };
   };
@@ -173,30 +173,8 @@ const SalesPage = () => {
         <div className="bg-blue-50 p-4 rounded-lg shadow relative">
           <h3 className="text-lg font-semibold text-blue-800">Sales</h3>
           <p className="text-2xl font-bold text-blue-600">
-            {salesMetrics.sales}
+            4
           </p>
-          {/* Line Chart */}
-          <div className="mt-3 h-16 flex items-center justify-center">
-            <svg
-              width="120"
-              height="60"
-              viewBox="0 0 120 60"
-              className="overflow-visible"
-            >
-              <polyline
-                fill="none"
-                stroke="#2563eb"
-                strokeWidth="2"
-                points="10,50 30,40 50,30 70,25 90,20 110,15"
-              />
-              <circle cx="10" cy="50" r="3" fill="#2563eb" />
-              <circle cx="30" cy="40" r="3" fill="#2563eb" />
-              <circle cx="50" cy="30" r="3" fill="#2563eb" />
-              <circle cx="70" cy="25" r="3" fill="#2563eb" />
-              <circle cx="90" cy="20" r="3" fill="#2563eb" />
-              <circle cx="110" cy="15" r="3" fill="#2563eb" />
-            </svg>
-          </div>
           <div className="mt-2 flex items-center gap-2">
             <span className="text-sm text-gray-600">
               {getPeriodLabel(salesPeriod)}
@@ -245,30 +223,8 @@ const SalesPage = () => {
         <div className="bg-green-50 p-4 rounded-lg shadow relative">
           <h3 className="text-lg font-semibold text-green-800">Revenue</h3>
           <p className="text-2xl font-bold text-green-600">
-            ₦{revenueMetrics.revenue.toLocaleString()}
+            {`MWK${revenueMetrics.revenue.toLocaleString()}`}
           </p>
-          {/* Line Chart */}
-          <div className="mt-3 h-16 flex items-center justify-center">
-            <svg
-              width="120"
-              height="60"
-              viewBox="0 0 120 60"
-              className="overflow-visible"
-            >
-              <polyline
-                fill="none"
-                stroke="#16a34a"
-                strokeWidth="2"
-                points="10,45 30,35 50,25 70,20 90,15 110,10"
-              />
-              <circle cx="10" cy="45" r="3" fill="#16a34a" />
-              <circle cx="30" cy="35" r="3" fill="#16a34a" />
-              <circle cx="50" cy="25" r="3" fill="#16a34a" />
-              <circle cx="70" cy="20" r="3" fill="#16a34a" />
-              <circle cx="90" cy="15" r="3" fill="#16a34a" />
-              <circle cx="110" cy="10" r="3" fill="#16a34a" />
-            </svg>
-          </div>
           <div className="mt-2 flex items-center gap-2">
             <span className="text-sm text-gray-600">
               {getPeriodLabel(revenuePeriod)}

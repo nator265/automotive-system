@@ -35,15 +35,20 @@ const SideNav = () => {
 
   const navItems = [
     { name: "General", icon: <DashboardIcon />, path: "/dashboard" },
-    { name: "Hires", icon: <DirectionsCarFilledIcon />, path: "/dashboard/hires" },
     { name: "Sales", icon: <SellIcon />, path: "/dashboard/sales" },
+    {
+      name: "Hires",
+      icon: <DirectionsCarFilledIcon />,
+      path: "/dashboard/hires",
+    },
+
     { name: "Clients", icon: <PeopleIcon />, path: "/dashboard/clients" },
     {
       name: "Manage Fleet",
       icon: <DirectionsCarIcon />,
       path: "/dashboard/manage-fleet",
     },
-    {name:"Blog Posts", icon: <PostAddSharp/>, path: "/dashboard/blog"},
+    { name: "Blog Posts", icon: <PostAddSharp />, path: "/dashboard/blog" },
     { name: "Settings", icon: <SettingsIcon />, path: "/dashboard/settings" },
   ];
 
@@ -88,7 +93,9 @@ const SideNav = () => {
             )}
             <div className="text-center">
               {!isExpanded && (
-                <DirectionsCarFilledIcon sx={{ fontSize: 28, color: "#1e40af" }} />
+                <DirectionsCarFilledIcon
+                  sx={{ fontSize: 28, color: "#1e40af" }}
+                />
               )}
             </div>
           </div>
