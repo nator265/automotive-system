@@ -3,29 +3,34 @@ import { db } from "@/app/lib/db";
 import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
-  const { token, password } = await req.json();
+  try {
+    const { token, newPassword } = await req.json();
+    const users = db.collection("users");
 
-  const user = await db.collection("users").findOne({
-    resetToken: token,
-    resetTokenExpires: { $gt: Date.now() },
-  });
+    const user = await users.findOne({ resetToken: token });
+    if (!user)
+      return NextResponse.json({ error: "Invalid token" }, { status: 400 });
 
-  if (!user) {
-    return NextResponse.json(
-      { message: "Invalid or expired token" },
-      { status: 400 }
-    );
-  }
-
-  const hashed = await bcrypt.hash(password, 10);
-
-  await db.collection("users").updateOne(
-    { _id: user._id },
-    {
-      $set: { password: hashed },
-      $unset: { resetToken: "", resetTokenExpires: "" },
+    if (user.resetTokenExpiry < new Date()) {
+      return NextResponse.json({ error: "Token expired" }, { status: 400 });
     }
-  );
 
-  return NextResponse.json({ message: "Password reset successful!" });
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await users.updateOne(
+      { _id: user._id },
+      {
+        $set: { password: hashedPassword },
+        $unset: { resetToken: "", resetTokenExpiry: "" },
+      }
+    );
+
+    return NextResponse.json({
+      success: true,
+      message: "Password reset successful",
+    });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
 }

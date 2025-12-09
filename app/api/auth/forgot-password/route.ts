@@ -1,35 +1,42 @@
 import { NextResponse } from "next/server";
 import { db } from "@/app/lib/db";
-import { sendEmail } from "@/app/lib/email";
 import { randomBytes } from "crypto";
+import { sendEmail } from "@/app/lib/email";
 
 export async function POST(req: Request) {
-  const { email } = await req.json();
+  try {
+    const { email } = await req.json();
+    const users = db.collection("users");
 
-  const user = await db.collection("users").findOne({ email });
-  if (!user)
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+    const user = await users.findOne({ email: email.toLowerCase() });
+    if (!user)
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-  const token = randomBytes(32).toString("hex");
-  const expires = Date.now() + 1000 * 60 * 15; // 15 minutes
+    // Create reset token
+    const resetToken = randomBytes(32).toString("hex");
+    const resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
-  await db.collection("users").updateOne(
-    { email },
-    {
-      $set: {
-        resetToken: token,
-        resetTokenExpires: expires,
-      },
-    }
-  );
+    await users.updateOne(
+      { _id: user._id },
+      { $set: { resetToken, resetTokenExpiry } }
+    );
 
-  const link = `${process.env.NEXT_PUBLIC_URL}/reset-password?token=${token}`;
+    const resetLink = `${process.env.NEXT_PUBLIC_BASE_URL}/reset-password?token=${resetToken}`;
 
-  await sendEmail(
-    email,
-    "Reset Your Password",
-    `<p>Click reset link: <a href="${link}">${link}</a></p>`
-  );
+    await sendEmail(
+      email,
+      "Reset Your Password",
+      `<p>Hi ${user.name},</p>
+       <p>Click the link below to reset your password (valid for 1 hour):</p>
+       <a href="${resetLink}">Reset Password</a>`
+    );
 
-  return NextResponse.json({ success: true });
+    return NextResponse.json({
+      success: true,
+      message: "Password reset email sent",
+    });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
 }

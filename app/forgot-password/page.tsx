@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import EmailIcon from "@mui/icons-material/Email";
 import { Snackbar, Alert } from "@mui/material";
 import { useRouter } from "next/navigation";
 
@@ -10,94 +8,66 @@ export default function ForgotPasswordPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [alertOpen, setAlertOpen] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
-  const [alertSeverity, setAlertSeverity] = useState<"success" | "error">(
-    "success"
-  );
+  const [alert, setAlert] = useState({
+    open: false,
+    message: "",
+    severity: "success" as "success" | "error",
+  });
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       const res = await fetch("/api/auth/forgot-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-
       const data = await res.json();
+
       if (!res.ok) {
-        setAlertMessage(data.error || "Failed to send reset link");
-        setAlertSeverity("error");
-        setAlertOpen(true);
+        setAlert({ open: true, message: data.error, severity: "error" });
       } else {
-        setAlertMessage("Reset link sent! Check your email.");
-        setAlertSeverity("success");
-        setAlertOpen(true);
+        setAlert({ open: true, message: data.message, severity: "success" });
+        setTimeout(() => router.push("/login"), 2000);
       }
-    } catch {
-      setAlertMessage("Server error");
-      setAlertSeverity("error");
-      setAlertOpen(true);
+    } catch (err) {
+      setAlert({ open: true, message: "Server error", severity: "error" });
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-100 to-white">
-      <div className="absolute top-8 left-8 flex gap-5">
-        <ArrowBackIcon
-          className="text-gray-700 hover:text-gray-900 cursor-pointer"
-          onClick={() => router.back()}
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-8 rounded shadow-md w-full max-w-md space-y-4"
+      >
+        <h2 className="text-2xl font-bold mb-4">Forgot Password</h2>
+        <input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full border p-2 rounded"
+          required
         />
-        <div className="text-gray-700 font-semibold">Automotive</div>
-      </div>
-
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-lg shadow-lg p-8 animate-fade-in">
-          <h3 className="text-2xl font-bold mb-6">Forgot Password</h3>
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="flex flex-col space-y-2">
-              <label>Email</label>
-              <div className="relative">
-                <EmailIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="border border-gray-300 p-2 pl-10 rounded-md w-full focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className="bg-blue-500 text-white p-2 rounded-md w-full hover:bg-blue-600 transition-all duration-300"
-            >
-              {loading ? "Sending..." : "Send Reset Link"}
-            </button>
-          </form>
-        </div>
-      </div>
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+        >
+          {loading ? "Sending..." : "Send Reset Email"}
+        </button>
+      </form>
 
       <Snackbar
-        open={alertOpen}
+        open={alert.open}
         autoHideDuration={4000}
-        onClose={() => setAlertOpen(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        onClose={() => setAlert({ ...alert, open: false })}
       >
-        <Alert
-          severity={alertSeverity}
-          onClose={() => setAlertOpen(false)}
-          sx={{ width: "100%" }}
-        >
-          {alertMessage}
-        </Alert>
+        <Alert severity={alert.severity}>{alert.message}</Alert>
       </Snackbar>
     </div>
   );

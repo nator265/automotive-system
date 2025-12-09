@@ -1,12 +1,25 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
-export const resend = new Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_HOST, // e.g., smtp.gmail.com
+  port: Number(process.env.EMAIL_PORT) || 587,
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 export async function sendEmail(to: string, subject: string, html: string) {
-  await resend.emails.send({
-    from: "no-reply@yourapp.com",
-    to,
-    subject,
-    html,
-  });
+  try {
+    const info = await transporter.sendMail({
+      from: `"Automotive System" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      html,
+    });
+    console.log("Email sent:", info.messageId);
+  } catch (err) {
+    console.error("Email error:", err);
+  }
 }

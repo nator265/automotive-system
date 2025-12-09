@@ -1,99 +1,82 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import LockIcon from "@mui/icons-material/Lock";
 import { Snackbar, Alert } from "@mui/material";
 
 export default function ResetPasswordPage() {
   const searchParams = useSearchParams();
-  const token = searchParams.get("token");
   const router = useRouter();
-
-  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [alertOpen, setAlertOpen] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
-  const [alertSeverity, setAlertSeverity] = useState<"success" | "error">(
-    "success"
-  );
+  const [alert, setAlert] = useState({
+    open: false,
+    message: "",
+    severity: "success" as "success" | "error",
+  });
 
-  async function handleSubmit(e: React.FormEvent) {
+  const token = searchParams.get("token");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!token) return;
+    if (!token)
+      return setAlert({
+        open: true,
+        message: "Invalid link",
+        severity: "error",
+      });
 
     setLoading(true);
     try {
       const res = await fetch("/api/auth/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, password }),
+        body: JSON.stringify({ token, newPassword }),
       });
       const data = await res.json();
 
-      if (!res.ok) {
-        setAlertMessage(data.message || "Reset failed");
-        setAlertSeverity("error");
-      } else {
-        setAlertMessage("Password reset successful!");
-        setAlertSeverity("success");
-        setTimeout(() => router.push("/login"), 1000);
+      if (!res.ok)
+        setAlert({ open: true, message: data.error, severity: "error" });
+      else {
+        setAlert({ open: true, message: data.message, severity: "success" });
+        setTimeout(() => router.push("/login"), 2000);
       }
-      setAlertOpen(true);
-    } catch {
-      setAlertMessage("Server error");
-      setAlertSeverity("error");
-      setAlertOpen(true);
+    } catch (err) {
+      setAlert({ open: true, message: "Server error", severity: "error" });
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-100 to-white">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-lg shadow-lg p-8 animate-fade-in">
-          <h3 className="text-2xl font-bold mb-6">Reset Password</h3>
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="flex flex-col space-y-2">
-              <label>New Password</label>
-              <div className="relative">
-                <LockIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Enter new password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="border border-gray-300 p-2 pl-10 rounded-md w-full focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              className="bg-blue-500 text-white p-2 rounded-md w-full hover:bg-blue-600 transition-all duration-300"
-            >
-              {loading ? "Resetting..." : "Reset Password"}
-            </button>
-          </form>
-        </div>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-8 rounded shadow-md w-full max-w-md space-y-4"
+      >
+        <h2 className="text-2xl font-bold mb-4">Reset Password</h2>
+        <input
+          type="password"
+          placeholder="New password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          className="w-full border p-2 rounded"
+          required
+        />
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+        >
+          {loading ? "Resetting..." : "Reset Password"}
+        </button>
+      </form>
 
       <Snackbar
-        open={alertOpen}
+        open={alert.open}
         autoHideDuration={4000}
-        onClose={() => setAlertOpen(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        onClose={() => setAlert({ ...alert, open: false })}
       >
-        <Alert
-          severity={alertSeverity}
-          onClose={() => setAlertOpen(false)}
-          sx={{ width: "100%" }}
-        >
-          {alertMessage}
-        </Alert>
+        <Alert severity={alert.severity}>{alert.message}</Alert>
       </Snackbar>
     </div>
   );
