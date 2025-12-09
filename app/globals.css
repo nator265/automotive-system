@@ -63,6 +63,11 @@ p {
     transform: translateY(8px);
     animation: fadeInUp 0.6s ease forwards;
   }
+
+  /* Fade-in animation for login form */
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-in-out forwards;
+  }
 }
 
 /* Keyframes */

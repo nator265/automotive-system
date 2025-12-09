@@ -5,6 +5,7 @@ import { cars } from "../../data/cars";
 import SearchIcon from "@mui/icons-material/Search";
 import Link from "next/link";
 import { FilterList } from "@mui/icons-material";
+import SimilarVehicles from "../components/SimilarVehicles";
 
 const HirePage = () => {
   const forHire = cars.filter((c) => c.availability === "For Hire");
@@ -12,8 +13,8 @@ const HirePage = () => {
   return (
     <>
       <Nav />
-      <div className="pt-14 md:pt-[100] p-4 md:p-8">
-        <div className="flex justify-between mb-5">
+      <div className="pt-20 md:pt-[100] p-4 md:p-8">
+        <div className=" justify-between mb-5">
           <div className="">
             <h1 className="text-3xl font-bold mb-2">Hire a Car</h1>
             <p className="text-gray-500 mb-6">

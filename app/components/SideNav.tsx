@@ -3,7 +3,6 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import BarChartIcon from "@mui/icons-material/BarChart";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -15,7 +14,7 @@ import SellIcon from "@mui/icons-material/Sell";
 import { useSideNav } from "@/app/context/SideNavContext";
 import { useRouter } from "next/navigation";
 import { PostAddSharp } from "@mui/icons-material";
-import path from "path";
+import LogoutButton from "./LogoutButton";
 
 const SideNav = () => {
   const pathname = usePathname();
@@ -235,6 +234,7 @@ const SideNav = () => {
               >
                 Logout
               </button>
+              <LogoutButton />
             </div>
           </div>
         </div>

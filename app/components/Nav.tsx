@@ -50,7 +50,7 @@ const MobileNav = () => {
 
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden p-2 rounded-md text-gray-700 hover:text-blue-600 transition"
+          className="md:hidden p-2 rounded-md text-white hover:text-blue-600 transition"
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <CloseIcon /> : <MenuIcon />}
