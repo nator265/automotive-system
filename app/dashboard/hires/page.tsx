@@ -309,8 +309,8 @@ const HiresPage = () => {
                 <th className="px-2 sm:px-4 py-2">Name</th>
                 <th className="px-2 sm:px-4 py-2">Car Taken</th>
                 <th className="px-2 sm:px-4 py-2">Payment</th>
+                <th className="px-2 sm:px-4 py-2">Payment Method</th>
                 <th className="px-2 sm:px-4 py-2">Date</th>
-                <th className="px-2 sm:px-4 py-2">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -321,20 +321,9 @@ const HiresPage = () => {
                   <td className="px-2 sm:px-4 py-2">
                     MWK{getPayment(b).toLocaleString()}
                   </td>
+                  <td className="px-2 sm:px-4 py-2">Cash</td>
                   <td className="px-2 sm:px-4 py-2">{b.date}</td>
-                  <td className="px-2 sm:px-4 py-2">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs ${
-                        b.status === "accepted"
-                          ? "bg-green-100 text-green-700"
-                          : b.status === "denied"
-                          ? "bg-red-100 text-red-700"
-                          : "bg-yellow-100 text-yellow-700"
-                      }`}
-                    >
-                      {b.status}
-                    </span>
-                  </td>
+                 
                 </tr>
               ))}
             </tbody>

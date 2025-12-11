@@ -6,19 +6,15 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
-import DirectionsCarFilledIcon from "@mui/icons-material/DirectionsCarFilled";
+import HistoryIcon from "@mui/icons-material/History";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import PeopleIcon from "@mui/icons-material/People";
-import SellIcon from "@mui/icons-material/Sell";
-import { useSideNav } from "@/app/context/SideNavContext";
 import { useRouter } from "next/navigation";
-import { PostAddSharp } from "@mui/icons-material";
 import LogoutButton from "./LogoutButton";
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 
-const SideNav = () => {
+const ClientSideNav = () => {
   const pathname = usePathname();
-  const { isExpanded, toggleSideNav } = useSideNav();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = React.useState(false);
@@ -33,22 +29,27 @@ const SideNav = () => {
   };
 
   const navItems = [
-    { name: "General", icon: <DashboardIcon />, path: "/dashboard" },
-    { name: "Sales", icon: <SellIcon />, path: "/dashboard/sales" },
+    { name: "General", icon: <DashboardIcon />, path: "/client-dashboard" },
     {
-      name: "Hires",
-      icon: <DirectionsCarFilledIcon />,
-      path: "/dashboard/hires",
-    },
-
-    { name: "Clients", icon: <PeopleIcon />, path: "/dashboard/clients" },
-    {
-      name: "Manage Fleet",
+      name: "Browse Fleet",
       icon: <DirectionsCarIcon />,
-      path: "/dashboard/manage-fleet",
+      path: "/client-dashboard/browse-fleet",
     },
-    { name: "Blog Posts", icon: <PostAddSharp />, path: "/dashboard/blog" },
-    { name: "Settings", icon: <SettingsIcon />, path: "/dashboard/settings" },
+    {
+      name: "Bookings",
+      icon: <AssignmentTurnedInIcon />,
+      path: "/client-dashboard/bookings",
+    },
+    {
+      name: "History",
+      icon: <HistoryIcon />,
+      path: "/client-dashboard/history",
+    },
+    {
+      name: "Account Settings",
+      icon: <SettingsIcon />,
+      path: "/client-dashboard/account-settings",
+    },
   ];
 
   return (
@@ -63,7 +64,7 @@ const SideNav = () => {
         </div>
         <div className="flex items-center gap-3">
           <a
-            href="/dashboard/settings"
+            href="/client-dashboard/account-settings"
             aria-label="Account settings"
             className="inline-block"
           >
@@ -73,65 +74,34 @@ const SideNav = () => {
       </div>
 
       {/* Desktop / large screen sidebar (fixed left) */}
-      <div
-        className={`hidden md:fixed md:inset-y-0 md:left-0 z-30 md:flex flex-col justify-between bg-linear-to-b from-amber-50 to-stone-50 text-gray-800 transition-all duration-300 ease-in-out ${
-          isExpanded ? "p-6 w-64" : "p-4 w-24 items-center"
-        }`}
-      >
-        {/* Header with Toggle */}
+      <div className="hidden md:fixed md:inset-y-0 md:left-0 z-30 md:flex flex-col justify-between bg-linear-to-b from-amber-50 to-stone-50 text-gray-800 w-64 p-6">
+        {/* Header */}
         <div className="items-center justify-between mb-10">
-          <div className="mb-">
-            {isExpanded && (
-              <div className="flex items-center gap-2">
-                <div>
-                  <h1 className="text-2xl font-bold tracking-wide text-gray-800">
-                    AutoMalawi
-                  </h1>
-                </div>
-              </div>
-            )}
-            <div className="text-center">
-              {!isExpanded && (
-                <DirectionsCarFilledIcon
-                  sx={{ fontSize: 28, color: "#1e40af" }}
-                />
-              )}
+          <div className="flex items-center gap-2">
+            <div>
+              <h1 className="text-2xl font-bold tracking-wide text-gray-800">
+                AutoMalawi
+              </h1>
+              <p className="text-xs text-gray-500">Client Portal</p>
             </div>
-          </div>
-
-          <div className="">
-            <button
-              onClick={toggleSideNav}
-              className="p-2 hover:bg-amber-100 rounded-lg transition text-gray-600"
-              title={isExpanded ? "Collapse" : "Expand"}
-            >
-              {isExpanded ? <CloseIcon /> : <MenuIcon />}
-            </button>
           </div>
         </div>
 
         {/* Menu */}
-        <nav
-          className={`space-y-3 flex-1 ${
-            isExpanded ? "w-full" : "w-full flex flex-col items-center"
-          }`}
-        >
+        <nav className="space-y-3 flex-1">
           {navItems.map((item) => {
             const isActive = pathname === item.path;
             return (
               <Link key={item.name} href={item.path} passHref>
                 <span
-                  className={`flex items-center justify-center md:justify-start gap-3 px-4 py-3 rounded-lg transition cursor-pointer whitespace-nowrap ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition cursor-pointer whitespace-nowrap ${
                     isActive
                       ? "bg-blue-600 text-white shadow-md"
                       : "text-gray-700 hover:bg-amber-100"
-                  } ${isExpanded ? "w-full" : "w-12 h-12 p-0"}`}
-                  title={!isExpanded ? item.name : undefined}
+                  }`}
                 >
                   <span className="text-xl shrink-0">{item.icon}</span>
-                  {isExpanded && (
-                    <span className="font-medium text-sm">{item.name}</span>
-                  )}
+                  <span className="font-medium text-sm">{item.name}</span>
                 </span>
               </Link>
             );
@@ -142,13 +112,10 @@ const SideNav = () => {
         <div className="pt-6 border-t border-gray-200 w-full">
           <button
             onClick={() => setShowLogoutConfirm(true)}
-            className={`flex items-center justify-center gap-2 bg-linear-to-r from-blue-600 to-blue-500 text-white px-4 py-3 rounded-lg hover:shadow-lg transition font-medium text-sm ${
-              isExpanded ? "w-full" : "w-12 h-12 p-0"
-            }`}
-            title={!isExpanded ? "Logout" : undefined}
+            className="flex items-center gap-2 bg-linear-to-r from-blue-600 to-blue-500 text-white px-4 py-3 rounded-lg hover:shadow-lg transition font-medium text-sm w-full"
           >
             <LogoutIcon fontSize="small" />
-            {isExpanded && <span>Logout</span>}
+            <span>Logout</span>
           </button>
         </div>
       </div>
@@ -160,12 +127,10 @@ const SideNav = () => {
           <div className="relative w-72 bg-white h-[calc(100%-56px)] p-4 overflow-auto">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
-                <DirectionsCarFilledIcon
-                  sx={{ fontSize: 28, color: "#1e40af" }}
-                />
+                <DirectionsCarIcon sx={{ fontSize: 28, color: "#1e40af" }} />
                 <div>
                   <h2 className="text-xl font-bold">AutoMalawi</h2>
-                  <p className="text-xs text-gray-500">Admin</p>
+                  <p className="text-xs text-gray-500">Client Portal</p>
                 </div>
               </div>
               <button onClick={closeMobile} className="p-2 rounded-md">
@@ -203,8 +168,6 @@ const SideNav = () => {
                   <span className="font-medium">Logout</span>
                 </button>
               </div>
-
-              {/* Removed public Buy/Hire links per UX update */}
             </nav>
           </div>
         </div>
@@ -239,8 +202,8 @@ const SideNav = () => {
 
 const AvatarPlaceholder = () => (
   <div className="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-white">
-    A
+    C
   </div>
 );
 
-export default SideNav;
+export default ClientSideNav;

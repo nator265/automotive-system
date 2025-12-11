@@ -36,7 +36,7 @@ const SalesPage = () => {
       email: "jane@example.com",
       phone: "0888888888",
       date: "2025-11-18",
-      status: "accepted",
+      status: "pending",
       payment: 30000000,
     },
     {

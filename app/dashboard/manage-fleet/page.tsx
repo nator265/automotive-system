@@ -128,7 +128,7 @@ const ManageFleetContent: React.FC = () => {
         >
           <h2 className="text-xl font-bold mb-3">Filter Cars</h2>
           <p className="text-sm text-gray-600 mb-4">
-            All fields are UI-only for now (Beforward-style).
+            All fields are UI-only for now
           </p>
 
           {/* Year */}
@@ -397,16 +397,18 @@ const ManageFleetContent: React.FC = () => {
 
             {/* Right side: Add button + Search + Filter (aligned) */}
             <div className="flex items-center gap-3">
-              <button className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:shadow-md transition flex items-center gap-2">
+              <Link
+                href="/dashboard/add-car"
+                className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:shadow-md transition flex items-center gap-2">
                 <AddIcon fontSize="small" /> Add New Car
-              </button>
+              </Link>
 
               {/* search box */}
               <div className="flex items-center border border-gray-300 rounded-md h-12 px-3 w-[220px] md:w-[300px]">
                 <input
                   type="search"
                   placeholder="Search..."
-                  className="flex-grow outline-none text-sm"
+                  className="grow outline-none text-sm"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -435,15 +437,15 @@ const ManageFleetContent: React.FC = () => {
           </div>
           <div className="bg-white rounded-lg shadow p-4">
             <p className="text-gray-500 text-sm">Available</p>
-            <p className="text-2xl font-bold text-green-600 mt-2">38</p>
+            <p className="text-2xl font-bold text-green-600 mt-2">1</p>
           </div>
           <div className="bg-white rounded-lg shadow p-4">
             <p className="text-gray-500 text-sm">In Rental</p>
-            <p className="text-2xl font-bold text-orange-600 mt-2">10</p>
+            <p className="text-2xl font-bold text-orange-600 mt-2">4</p>
           </div>
           <div className="bg-white rounded-lg shadow p-4">
             <p className="text-gray-500 text-sm">Sold</p>
-            <p className="text-2xl font-bold text-red-600 mt-2">4</p>
+            <p className="text-2xl font-bold text-red-600 mt-2">1</p>
           </div>
         </div>
 

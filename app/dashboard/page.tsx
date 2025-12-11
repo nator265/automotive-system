@@ -10,6 +10,7 @@ import {
   upcomingMaintenance,
   topModels,
 } from "../../data/dashboard";
+import Link from "next/link";
 
 const Sparkline = ({ data }: { data: number[] }) => {
   if (!data || data.length === 0) return null;
@@ -125,9 +126,11 @@ const DashboardContent = () => {
             Quick Actions
           </h3>
           <div className="flex flex-col gap-3">
-            <button className="bg-blue-600 text-white py-2 px-3 rounded">
+            <Link
+              href="/dashboard/add-car"
+            className="bg-blue-600 text-white py-2 px-3 rounded text-center">
               Add New Car
-            </button>
+            </Link>
             <button className="border border-gray-300 py-2 px-3 rounded">
               Approve Pending Booking
             </button>

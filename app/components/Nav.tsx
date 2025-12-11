@@ -41,7 +41,7 @@ const MobileNav = () => {
           ))}
 
           <Link
-            href="/dashboard"
+            href="/login"
             className="ml-6 px-4 py-2 bg-orange-600 text-white rounded-md font-semibold hover:bg-blue-700 transition-colors duration-300"
           >
             Login
