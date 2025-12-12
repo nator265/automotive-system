@@ -45,7 +45,7 @@ const KPIBox = ({
     <div className="flex items-center justify-between">
       <div>
         <p className="text-sm text-gray-500">{title}</p>
-        <p className="text-2xl font-semibold text-gray-800">{value}</p>
+        <p className="text-4xl font-semibold text-gray-800">{value}</p>
       </div>
       <div
         className={`text-sm font-medium ${
@@ -96,7 +96,7 @@ const DashboardContent = () => {
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
         {kpis.map((k) => (
           <KPIBox
             key={k.title}

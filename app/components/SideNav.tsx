@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import BarChartIcon from "@mui/icons-material/BarChart";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -10,11 +11,10 @@ import DirectionsCarFilledIcon from "@mui/icons-material/DirectionsCarFilled";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import PeopleIcon from "@mui/icons-material/People";
-import SellIcon from "@mui/icons-material/Sell";
 import { useSideNav } from "@/app/context/SideNavContext";
 import { useRouter } from "next/navigation";
 import { PostAddSharp } from "@mui/icons-material";
-import LogoutButton from "./LogoutButton";
+import path from "path";
 
 const SideNav = () => {
   const pathname = usePathname();
@@ -34,20 +34,15 @@ const SideNav = () => {
 
   const navItems = [
     { name: "General", icon: <DashboardIcon />, path: "/dashboard" },
-    { name: "Sales", icon: <SellIcon />, path: "/dashboard/sales" },
-    {
-      name: "Hires",
-      icon: <DirectionsCarFilledIcon />,
-      path: "/dashboard/hires",
-    },
-
+    { name: "Reports", icon: <BarChartIcon />, path: "/dashboard/reports" },
     { name: "Clients", icon: <PeopleIcon />, path: "/dashboard/clients" },
     {
       name: "Manage Fleet",
       icon: <DirectionsCarIcon />,
       path: "/dashboard/manage-fleet",
     },
-    { name: "Blog Posts", icon: <PostAddSharp />, path: "/dashboard/blog" },
+    { name: "Hires", icon: <DirectionsCarFilledIcon />, path: "/dashboard/hires" },
+    {name:"Blog Posts", icon: <PostAddSharp/>, path: "/dashboard/blog"},
     { name: "Settings", icon: <SettingsIcon />, path: "/dashboard/settings" },
   ];
 
@@ -92,9 +87,7 @@ const SideNav = () => {
             )}
             <div className="text-center">
               {!isExpanded && (
-                <DirectionsCarFilledIcon
-                  sx={{ fontSize: 28, color: "#1e40af" }}
-                />
+                <DirectionsCarFilledIcon sx={{ fontSize: 28, color: "#1e40af" }} />
               )}
             </div>
           </div>
@@ -228,7 +221,12 @@ const SideNav = () => {
               >
                 Cancel
               </button>
-              <LogoutButton />
+              <button
+                onClick={handleLogoutConfirm}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-medium"
+              >
+                Logout
+              </button>
             </div>
           </div>
         </div>

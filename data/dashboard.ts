@@ -8,7 +8,6 @@ export const kpis: KPI[] = [
   { title: "Cars Sold", value: 150, change: 12 },
   { title: "Cars Hired", value: 89, change: 5 },
   { title: "Total Revenue", value: "$125,400", change: 8 },
-  { title: "Active Listings", value: 45, change: -2 },
 ];
 
 export const monthlyRevenue: number[] = [

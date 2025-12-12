@@ -82,7 +82,6 @@ const ClientSideNav = () => {
               <h1 className="text-2xl font-bold tracking-wide text-gray-800">
                 AutoMalawi
               </h1>
-              <p className="text-xs text-gray-500">Client Portal</p>
             </div>
           </div>
         </div>

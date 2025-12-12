@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import { db } from "@/app/lib/db";
+import { connectDB } from "@/app/lib/db";
+import User from "@/models/User";
 
 export async function POST(req: Request) {
   try {
-    const { email, password } = await req.json();
-    const users = db.collection("users");
+    await connectDB();
+    const { email, password  } = await req.json();
 
     // Case-insensitive search
-    const user = await users.findOne({
+    const user = await User.findOne({
       email: { $regex: `^${email}$`, $options: "i" },
     });
 
@@ -16,20 +16,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Incorrect email" }, { status: 401 });
 
     // Check password
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await user.comparePassword(password);
     if (!isMatch)
       return NextResponse.json(
         { error: "Incorrect password" },
         { status: 401 }
       );
-
-    // Check if email verified
-    if (!user.emailVerified) {
-      return NextResponse.json(
-        { error: "Please verify your email first" },
-        { status: 401 }
-      );
-    }
 
     // Set cookie
     const res = NextResponse.json({ success: true, role: user.role });

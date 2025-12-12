@@ -1,30 +1,27 @@
-// db.ts
-import { MongoClient, Db } from "mongodb";
+import mongoose from "mongoose";
 
-const uri = process.env.MONGODB_URI!;
-const dbName = process.env.MONGODB_DB || "automotive";
+const MONGODB_URI = process.env.MONGODB_URI!;
 
-const globalForMongo = globalThis as unknown as {
-  mongoClient?: MongoClient;
-  db?: Db;
-};
+if (!MONGODB_URI) throw new Error("Missing MongoDB URI");
 
-export const client =
-  globalForMongo.mongoClient ??
-  new MongoClient(uri, {
-    maxPoolSize: 10,
-  });
+let cached = (global as any).mongoose || { conn: null, promise: null };
 
-if (!globalForMongo.mongoClient) {
-  globalForMongo.mongoClient = client;
+export async function connectDB() {
+  if (cached.conn) return cached.conn;
+
+  if (!cached.promise) {
+    cached.promise = mongoose
+      .connect(MONGODB_URI, {
+        dbName: process.env.MONGODB_DB || "automotive",
+      })
+      .then((mongoose) => {
+        console.log("MongoDB connected with Mongoose");
+        return mongoose;
+      });
+  }
+
+  cached.conn = await cached.promise;
+  return cached.conn;
 }
 
-// Connect once and export the DB
-export const db: Db = globalForMongo.db ?? client.db(dbName);
-
-if (!globalForMongo.db) {
-  client.connect().then(() => {
-    globalForMongo.db = client.db(dbName);
-    console.log("MongoDB connected:", dbName);
-  });
-}
+(global as any).mongoose = cached;

@@ -6,6 +6,10 @@ export interface IUser extends Document {
   email: string;
   password: string;
   role: "admin" | "client";
+  verificationToken?: string;
+  contact?: string;
+  resetToken?: string;
+  resetTokenExpiry?: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 

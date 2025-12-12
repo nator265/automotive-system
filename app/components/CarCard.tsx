@@ -98,7 +98,7 @@ const CarCard = ({ car }: CarCardProps) => {
             )}
           </div>
           <Link
-            href={`/client-dashboard/browse-fleet/showroom`}
+            href={`/buy/showroom`}
             className="text-sm text-blue-600 hover:underline flex items-center gap-2"
           >
             View Details <span aria-hidden>↗</span>

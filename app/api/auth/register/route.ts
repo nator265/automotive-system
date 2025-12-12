@@ -1,16 +1,15 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import { db } from "@/app/lib/db";
+import { connectDB } from "@/app/lib/db";
+import User from "@/models/User";
 import { randomBytes } from "crypto";
-import { sendEmail } from "@/app/lib/email";
 
 export async function POST(req: Request) {
   try {
+    await connectDB();
     const { name, email, password, contact } = await req.json();
-    const users = db.collection("users");
 
     // Check if user exists
-    const existing = await users.findOne({
+    const existing = await User.findOne({
       email: { $regex: `^${email}$`, $options: "i" },
     });
     if (existing) {
@@ -20,39 +19,20 @@ export async function POST(req: Request) {
       );
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Create verification token
+    const verificationToken = randomBytes(32).toString("hex");
 
     // Create user
-    const result = await users.insertOne({
+    const user = new User({
       name,
       email: email.toLowerCase(),
-      password: hashedPassword,
+      password,
       contact: contact || "",
-      role: "client", // default role
-      emailVerified: false,
-      createdAt: new Date(),
+      role: "client",
+      verificationToken,
     });
 
-    // Create verification token
-    const verificationToken = randomBytes(32).toString("hex"); // ✅ declare variable
-
-    // Save verification token to user
-    await users.updateOne(
-      { _id: result.insertedId },
-      { $set: { verificationToken } }
-    );
-
-    const verificationLink = `${process.env.NEXT_PUBLIC_BASE_URL}/verify-email?token=${verificationToken}`;
-
-    // Send email
-    await sendEmail(
-      email,
-      "Verify your email",
-      `<p>Hi ${name},</p>
-       <p>Please verify your email by clicking the link below:</p>
-       <a href="${verificationLink}">Verify Email</a>`
-    );
+    await user.save();
 
     return NextResponse.json({
       success: true,
